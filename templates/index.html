@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}
+Mini Search
+{%  endblock %}
+
+{% block content %}
+    <div id = "searchbox">
+        <form action="/search">
+            <input type="text" name="query">
+            <input type="submit" value="Search">
+        </form>
+    </div>
+    
+    <ul class="bookmarks" >
+        {% for document in content %}
+            <li>
+                <p><b>{{document["title"]}}</b></p>
+                <p>score: {{document["score"]}}</p>
+                <p>{{document["content"]|safe}}</p>
+            </li>
+        {% endfor %}
+    </ul>
+    
+{% endblock %}

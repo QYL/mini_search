@@ -8,7 +8,6 @@ ignore_list = [".DS_Store", ]
 class IndexBuilder:
     
     def __init__(self, doc_path):
-
         self.stemmer = PorterStemmer()
         self._documents = [f for f in listdir(doc_path) if isfile(join(doc_path, f)) and f not in ignore_list]
         with open('english.stop') as stopwords:
@@ -45,7 +44,7 @@ class IndexBuilder:
         return positional_index
     
     # return {'D0650.M.250.E.J': {'jimmi': [0], 'carter': [1, 22, 24, 35, 98, 99, 130, 147], ...}
-    def _doc_index(self):
+    def _term_position(self):
         doc_map = {}
         for file_name in self._terms.keys():
             doc_map[file_name] = self._positional_index_for_doc(file_name)
@@ -55,7 +54,7 @@ class IndexBuilder:
     # return {'breach': {'D0634.M.250.G.H': [112], 'D0634.M.250.G.F': [125], 'D0634.M.250.G.I': [80]}, ...}
     def _build_inverted_index(self):
         inverted_index = {}
-        doc_index = self._doc_index()
+        doc_index = self._term_position()
         for file_name in doc_index.keys():
             self._term_frequency[file_name] = {}
             for term in doc_index[file_name].keys():
@@ -80,7 +79,7 @@ class IndexBuilder:
         for doc in self._documents:
             doc_vector[doc] = []
             for term in self._terms[doc]:
-                tf_idf = self._term_frequency[doc][term] * self._inverted_doc_frequency[term]
+                tf_idf = self._term_frequency[doc][term] * self._inverted_doc_frequency[doc][term]
                 doc_vector[doc].append(tf_idf)
         return doc_vector
                 
@@ -99,9 +98,13 @@ class IndexBuilder:
 
     def idf(self):
         for doc in self._documents:
+            self._inverted_doc_frequency[doc] = {}
             for term in self._terms[doc]:
-                self._inverted_doc_frequency[term] = math.log(len(self._documents)/self._doc_frequency[term])
+                self._inverted_doc_frequency[doc][term] = math.log(len(self._documents)/self._doc_frequency[term])
         return self._inverted_doc_frequency
 
+    def documents(self):
+        return self._documents
     
-
+    def terms(self):
+        return self._terms
