@@ -7,13 +7,13 @@ Mini Search
 {% block content %}
     <div id = "searchbox">
         <form action="/search">
-            <input type="text" name="query">
+            <input type="text" name="query" value='{{content["query"]}}'>
             <input type="submit" value="Search">
         </form>
     </div>
     
     <ul class="bookmarks" >
-        {% for document in content %}
+        {% for document in content["documents"] %}
             <li>
                 <p><b>{{document["title"]}}</b></p>
                 <p><font color="green">Score: {{document["score"]}}</font></p>

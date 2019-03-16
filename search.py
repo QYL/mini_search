@@ -19,7 +19,8 @@ engine = Engine()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    content = {}
+    return render_template('index.html', content=content)
 
 @app.route('/search')
 def search():
@@ -28,7 +29,9 @@ def search():
     query_terms = query.split() 
     query_terms = [stemmer.stem(t) for t in query_terms]
     result = engine.query(query)
-    content = []
+    content = {}
+    content["documents"] = []
+    content["query"] = request.args['query']
     for doc in result:
         document = {}
         doc_name, doc_score = doc
@@ -43,7 +46,7 @@ def search():
             for pos in positions:
                 doc_terms[pos] = "<font color='red'>{0}</font>".format(doc_terms[pos])    
         document["content"] = " ".join(doc_terms)
-        content.append(document)
+        content["documents"].append(document)
     return render_template('index.html', content=content)
 
 
