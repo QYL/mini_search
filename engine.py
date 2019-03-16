@@ -6,12 +6,14 @@ class Engine:
 
     def __init__(self):
         self.stemmer = PorterStemmer()
+        self.build()
+        
+    def build(self):
         self.index_builder = IndexBuilder("./data")
         self._inverted_doc_frequency = self.index_builder.idf()
         self._documents = self.index_builder.documents()
         self._terms = self.index_builder.terms()
         self.vector = self.index_builder.vector()
-        
   
     def vector_for_query(self, query):
         clean_query = self._clean_query(query)

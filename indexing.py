@@ -100,7 +100,11 @@ class IndexBuilder:
         for doc in self._documents:
             self._inverted_doc_frequency[doc] = {}
             for term in self._terms[doc]:
-                self._inverted_doc_frequency[doc][term] = math.log(len(self._documents)/self._doc_frequency[term])
+                idf = math.log(len(self._documents)/self._doc_frequency[term]) 
+                if(idf == 0):
+                    self._inverted_doc_frequency[doc][term] = 1
+                else:
+                    self._inverted_doc_frequency[doc][term] = idf
         return self._inverted_doc_frequency
 
     def documents(self):

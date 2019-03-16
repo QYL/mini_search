@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+Upload New Document
+{%  endblock %}
+
+{% block content %}
+
+<form action ="/upload"  method="post" enctype="multipart/form-data">
+<input type="file" name="file">
+<input type="submit" value="Upload">
+</form>
+    
+{% endblock %}

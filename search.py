@@ -1,13 +1,19 @@
 from engine import Engine
 from flask import Flask
 from flask import render_template, request
+from flask import Flask, flash, request, redirect, url_for
+from werkzeug.utils import secure_filename
 
-import re, io, string
+import re, io, string, os
 from nltk.stem.porter import *
+
+
+UPLOAD_FOLDER = './data'
 
 stemmer = PorterStemmer()
 
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 engine = Engine()
 
@@ -41,12 +47,28 @@ def search():
     return render_template('index.html', content=content)
 
 
+@app.route('/upload', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file found.')
+            return render_template('upload_status.html')
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file.')
+            return render_template('upload_status.html')
+        
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        flash('File Uploaded!')
+        engine.build()
+        return render_template('upload_status.html')
+    return render_template('upload.html')
 
 if __name__ == "__main__":
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.run(debug = True)
-    # workon lab && cd code && python test.py
-    # index_builder = IndexBuilder("./data")
-    # print(index_builder.df())
-    # print(index_builder.tf())
-    # print(index_builder.index())
-    # print(engine.query("putin plead close"))

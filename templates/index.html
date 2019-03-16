@@ -16,8 +16,8 @@ Mini Search
         {% for document in content %}
             <li>
                 <p><b>{{document["title"]}}</b></p>
-                <p>score: {{document["score"]}}</p>
-                <p>{{document["content"]|safe}}</p>
+                <p><font color="green">Score: {{document["score"]}}</font></p>
+                <p><font color="gray">{{document["content"]|safe}}</font></p>
             </li>
         {% endfor %}
     </ul>
